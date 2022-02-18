@@ -1,0 +1,48 @@
+[user]
+	name = Jeff Bean
+
+[core]
+	editor = vim
+  whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+
+[pull]
+  rebase = true
+[push]
+  default = tracking
+
+[branch]
+      autosetuprebase = always
+[rerere]
+  enabled = true
+[alias]
+  st = status
+  ci = commit
+  br = branch -vv --sort=committerdate
+  co = checkout
+  df = diff
+  dc = diff --cached
+	lg = log -p
+	ls = !git --no-pager log @{u}...HEAD --graph --decorate --left-right --boundary --abbrev-commit --date=relative --oneline
+  who = shortlog -s --
+  logg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+  ui = true
+  pager = true
+
+[color "status"]
+  added = green
+  changed = blue
+  untracked = magenta
+  deleted = red
+
+[color "branch"]
+  current = green black
+  local = blue
+  remote = magenta
+
+# vim: set filetype=.gitconfig:
