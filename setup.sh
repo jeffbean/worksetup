@@ -21,8 +21,8 @@ set -eu
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 brew analytics off 2>&1 >/dev/null
-brew bundle --file=Brewfile
-brew bundle --file=Brewfile.uber
+brew bundle --file=osx/Brewfile
+brew bundle --file=osx/Brewfile.uber
 
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
