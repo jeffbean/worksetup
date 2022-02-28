@@ -1,0 +1,46 @@
+export ZSH=${HOME}/.oh-my-zsh                                                       
+                                                                                    
+ZSH_THEME="bean"        
+export POWERLINE_NO_SHELL_PROMPT=1                                                  
+                                                                                    
+# Uncomment the following line if you want to change the command execution time                                                                                         
+# stamp shown in the history command output.                            
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+HIST_STAMPS="yyyy-mm-dd"                                                            
+
+source $ZSH/oh-my-zsh.sh                  
+
+export EDITOR=vim                                                                   
+export UBER_OWNER="bean@uber.com"                                                   
+export UBER_LDAP_UID="bean"                                                                                                                                             
+
+######## Alias Section ############################            
+
+alias bhd="bazel run //src/code.uber.internal/infra/bhd/cmd/cli --"
+alias massrem="bazel run //src/code.uber.internal/infra/hostissues/cmd/massremediation --"
+# Bazel
+alias bshow="bazel query 'kind(rule, ...)' --output label_kind"
+
+fr() {
+    rg -l "$1" | xargs perl -p -i -e "s#$1#$2#g"   
+}
+
+histo() {
+   sort | uniq -c | sort -r
+}
+###################################################
+
+# arc auto complete
+source /usr/share/arcanist/arcanist/resources/shell/bash-completion
+
+# installed with apt
+# auto-jump plugin - "j <dir>"
+[ -f /usr/share/autojump/autojump.sh ] && . /usr/share/autojump/autojump.sh
+
+path=(/usr/local/sbin /usr/local/bin $path)
+
+echo -e "`date +"%Y-%m-%d %H:%M:%S"` direnv hooking zsh"
+eval "$(direnv hook zsh)"
+
+autoload bashcompinit
+bashcompinit
