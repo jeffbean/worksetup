@@ -16,6 +16,8 @@ export UBER_LDAP_UID="bean"
 
 ######## Alias Section ############################            
 
+alias af='arc flow' 
+
 alias bhd="bazel run //src/code.uber.internal/infra/bhd/cmd/cli --"
 alias massrem="bazel run //src/code.uber.internal/infra/hostissues/cmd/massremediation --"
 # Bazel
@@ -24,6 +26,7 @@ alias mtest='gazelle && bazel test //src/code.uber.internal/infra/metal/...'
 alias ms='gazelle && bazel test //src/code.uber.internal/infra/metal/... && bazel build --nobuild //src/code.uber.internal/infra/metal/... && bazel test //src/code.uber.internal/infra/collettore/...'
 alias sgg='~/go-code/config/infra/starlark/scripts/stargen.sh'
 alias bpit='bazel build --platforms //:linux-amd64 //src/code.uber.internal/infra/metal/pitstop/cmd:pitstop-cmd'
+
 
 fr() {
     rg -l "$1" | xargs perl -p -i -e "s#$1#$2#g"   
