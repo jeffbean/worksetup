@@ -6,7 +6,7 @@ shell: zsh
 packages:
   - unp # install unzip/untar/unarchive wrapper
   - autojump
-  - ubuild-cli
+  - uber-ubuild-cli
  
 repositories:
   - dest: /home/user/.oh-my-zsh
