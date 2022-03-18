@@ -1,0 +1,27 @@
+---
+schema_version: 0
+flavor: go
+region: oregon
+shell: zsh
+packages:
+  - unp # install unzip/untar/unarchive wrapper
+  - autojump
+  - ubuild-cli
+ 
+repositories:
+  - dest: /home/user/.oh-my-zsh
+    repo: https://github.com/ohmyzsh/ohmyzsh.git
+  - dest: /home/user/bean-worksetup
+    repo: https://github.com/jeffbean/worksetup.git
+    update: true
+
+tasks:
+  - name: update bean zshrc
+    command: cp /home/user/bean-worksetup/devpod/home/zshrc /home/user/.zshrc
+    when: "on-create,on-restart"
+  - name: update bean zsh theme
+    command: cp /home/user/bean-worksetup/unfinished/bean.zsh-theme /home/user/.oh-my-zsh/themes/
+    when: "on-create,on-restart"
+  - name: update bean gitconfig
+    command: cp /home/user/bean-worksetup/devpod/home/dot.gitconfig /home/user/.gitconfig
+    when: "on-create,on-restart"
