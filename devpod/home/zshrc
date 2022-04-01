@@ -25,7 +25,7 @@ alias bshow="bazel query 'kind(rule, ...)' --output label_kind"
 alias mtest='gazelle && bazel test //src/code.uber.internal/infra/metal/...'
 alias ms='gazelle && bazel test //src/code.uber.internal/infra/metal/... && bazel build --nobuild //src/code.uber.internal/infra/metal/... && bazel test //src/code.uber.internal/infra/collettore/...'
 alias sgg='~/go-code/config/infra/starlark/scripts/stargen.sh'
-alias bpit='bazel build --platforms //:linux-amd64 //src/code.uber.internal/infra/metal/pitstop/cmd:pitstop-cmd'
+alias bpit='bazel build --platforms //:linux-amd64 //src/code.uber.internal/infra/metal/pitstop/cmd:pitstop'
 
 
 fr() {
