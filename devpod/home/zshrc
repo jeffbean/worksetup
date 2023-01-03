@@ -37,8 +37,6 @@ histo() {
 }
 ###################################################
 
-# arc auto complete
-source /usr/share/arcanist/arcanist/resources/shell/bash-completion
 
 # installed with apt
 # auto-jump plugin - "j <dir>"
