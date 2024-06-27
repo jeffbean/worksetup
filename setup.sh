@@ -57,3 +57,6 @@ cp --backup=numbered templates/dot_vimrc "${HOME}/.vimrc"
 cp --backup=numbered templates/dot_tmux.conf "${HOME}/.tmux.conf"
 mkdir -p "${HOME}/.zsh/rc.d"
 rsync unfinished/zsh/rc.d/* "${HOME}/.zsh/rc.d"
+
+cp unfinished/bean.zsh-theme ~/.oh-my-zsh/themes
+
