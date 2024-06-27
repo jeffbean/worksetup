@@ -50,10 +50,10 @@ pip3 install powerline-status
 
 # zsh
 # install : todo - dont do this without prompting
-# sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # # cp --backup=numbered templates/zshrc ~/.zshrc
-# cp --backup=numbered templates/dot_vimrc "${HOME}/.vimrc"
-# cp --backup=numbered templates/dot_tmux.conf "${HOME}/.tmux.conf"
-# mkdir -p "${HOME}/.zsh/rc.d"
-# rsync unfinished/zsh/rc.d/* "${HOME}/.zsh/rc.d"
+cp --backup=numbered templates/dot_vimrc "${HOME}/.vimrc"
+cp --backup=numbered templates/dot_tmux.conf "${HOME}/.tmux.conf"
+mkdir -p "${HOME}/.zsh/rc.d"
+rsync unfinished/zsh/rc.d/* "${HOME}/.zsh/rc.d"
