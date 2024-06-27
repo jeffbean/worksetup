@@ -9,9 +9,6 @@ brew "zsh-syntax-highlighting"
 # this is for the autojump command we setup in our shell profile
 brew "autojump"
 
-# we use some lpass aliases to make password mgmt nice
-brew "lastpass-cli"
-
 # local tooling
 brew 'direnv'
 
