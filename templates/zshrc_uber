@@ -55,13 +55,6 @@ if [ -f ${crane_proxy} ]; then
     source "${crane_proxy}"
 fi
 
-upass () {
-   lpass show --password --clip 'Uber Work'
-}
-
-spass () {
-   lpass show --password --clip 'Uber Sudo'
-}
 # ---------------------------------------------------
 
 eval "$(op completion zsh)"; compdef _op op
