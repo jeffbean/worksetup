@@ -2,6 +2,7 @@ cask_args appdir: "/Applications"
 
 brew 'git'
 brew 'grep'
+brew 'htop'
 
 brew 'zsh'
 # used in the zsh configuration
