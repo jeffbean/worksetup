@@ -24,37 +24,22 @@ brew analytics off 2>&1 >/dev/null
 brew bundle --file=osx/Brewfile
 brew bundle --file=osx/Brewfile.uber
 
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-
+[ ! -d ~/.tmux/plugins/tpm ] && git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # powerline
-pip3 install virtualenv
-mkdir -p "${HOME}/Library/Application\ Support/pip"
-mkdir -p "${HOME}/Virtualenvs"
-
-touch "${HOME}/Library/Application\ Support/pip/pip.conf"
-echo "[install]
-require-virtualenv = true
-
-[uninstall]
-require-virtualenv = true" > "${HOME}/Library/Application\ Support/pip/pip.conf"
-# should verify we cant pip isntall without gpip alias
-
-virtualenv --system-site-packages "${HOME}/Virtualenvs/tmux-plugins"
+python3 -m venv "${HOME}/Virtualenvs/tmux-plugins"
 source "${HOME}/Virtualenvs/tmux-plugins/bin/activate"
-
-pip3 install powerline-status
-
+pip install powerline-status
 ## end powerline setup
 
 
 # zsh
 # install : todo - dont do this without prompting
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# # cp --backup=numbered templates/zshrc ~/.zshrc
+cp --backup=numbered templates/zshrc ~/.zshrc
 cp --backup=numbered templates/dot_vimrc "${HOME}/.vimrc"
 cp --backup=numbered templates/dot_tmux.conf "${HOME}/.tmux.conf"
+
 mkdir -p "${HOME}/.zsh/rc.d"
 rsync unfinished/zsh/rc.d/* "${HOME}/.zsh/rc.d"
 
