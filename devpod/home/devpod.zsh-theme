@@ -1,4 +1,4 @@
-PROMPT='[beans devpod %D{%m-%d-%y %K:%M:%S (%z)}] :%{$fg[blue]%}%~%{$reset_color%}$(git_prompt_info) %(!.#.$) '
+PROMPT='[devpod: %{$fg[blue]%}%M%{$reset_color%} %D{%m-%d-%y %K:%M:%S (%z)}] :%{$fg[blue]%}%~%{$reset_color%}$(git_prompt_info) %(!.#.$) '
 
 ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[yellow]%}git:("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%}"
