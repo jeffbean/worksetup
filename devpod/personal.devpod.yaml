@@ -20,7 +20,7 @@ tasks:
     command: cp /home/user/bean-worksetup/devpod/home/zshrc /home/user/.zshrc
     when: "on-create,on-restart"
   - name: update bean zsh theme
-    command: cp /home/user/bean-worksetup/unfinished/bean.zsh-theme /home/user/.oh-my-zsh/themes/
+    command: cp /home/user/bean-worksetup/devpod/home/devpod.zsh-theme /home/user/.oh-my-zsh/themes/
     when: "on-create,on-restart"
   - name: update bean gitconfig
     command: cp /home/user/bean-worksetup/devpod/home/dot.gitconfig /home/user/.gitconfig
