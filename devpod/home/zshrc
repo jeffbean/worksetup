@@ -13,7 +13,7 @@ source $ZSH/oh-my-zsh.sh
 export EDITOR=vim                                                                   
 export UBER_OWNER="bean@uber.com"                                                   
 export UBER_LDAP_UID="bean"     
-export KUBECONFIG="~/.kube/uconfig"
+export KUBECONFIG="$HOME/.kube/uconfig"
 
 ######## Alias Section ############################            
 
