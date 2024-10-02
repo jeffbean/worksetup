@@ -17,7 +17,7 @@ set -eu
 [ -d /usr/local/lib/dnscrypt-proxy ] && sudo chown -R root:wheel /usr/local/lib/dnscrypt-proxy
 [ -d /usr/local/share ] && sudo chown -R $(whoami) /usr/local/share
 [ -d /usr/local/Homebrew/Library/Taps/uber/homebrew-alt ] && rm -rf /usr/local/Homebrew/Library/Taps/uber/homebrew-alt
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# install brew
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 brew analytics off 2>&1 >/dev/null
