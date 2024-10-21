@@ -8,6 +8,7 @@ packages:
   - autojump
   - uber-ubuild-cli
   - kubectl
+  - google-cloud-cli-gke-gcloud-auth-plugin
  
 repositories:
   - dest: /home/user/.oh-my-zsh
