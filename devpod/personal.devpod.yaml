@@ -10,6 +10,7 @@ packages:
   - uber-hostcollector
   - kubectl
   - google-cloud-cli-gke-gcloud-auth-plugin
+  - atop
  
 repositories:
   - dest: /home/user/.oh-my-zsh
