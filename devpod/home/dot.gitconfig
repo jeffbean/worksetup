@@ -17,3 +17,5 @@
     po = pull origin main
     an = commit --amend --no-edit
 
+[core]
+    excludesfile = /home/user/.gitignore
