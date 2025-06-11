@@ -29,3 +29,6 @@ tasks:
   - name: update bean gitconfig
     command: cp /home/user/bean-worksetup/devpod/home/dot.gitconfig /home/user/.gitconfig
     when: "on-create,on-restart"
+  - name: update bean gitignore
+    command: cp /home/user/bean-worksetup/devpod/home/dot.gitignore /home/user/.gitignore
+    when: "on-create,on-restart"
