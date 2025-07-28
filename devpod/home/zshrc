@@ -47,6 +47,7 @@ path=(/usr/local/sbin /usr/local/bin $path)
 
 echo -e "`date +"%Y-%m-%d %H:%M:%S"` direnv hooking zsh"
 eval "$(direnv hook zsh)"
+eval "$(gs shell completion zsh)"
 
 autoload bashcompinit
 bashcompinit
