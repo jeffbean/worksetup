@@ -21,8 +21,10 @@ repositories:
 
 tasks:
   - name: install git-spice
-    command: go install go.abhg.dev/gs@latest
+    command: /usr/local/bin/go install go.abhg.dev/gs@latest
     when: "on-create,on-restart"
+    args:
+        chdir: /home/user
   - name: update bean zshrc
     command: cp /home/user/bean-worksetup/devpod/home/zshrc /home/user/.zshrc
     when: "on-create,on-restart"
