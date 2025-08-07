@@ -20,6 +20,6 @@
 [core]
     excludesfile = /home/user/.gitignore
 
-[spice]
-   submit.publish = false
-   branchCreate.prefix = "bean/"
+# [spice]
+#   submit.publish = false
+#   branchCreate.prefix = "bean/"
