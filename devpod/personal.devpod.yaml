@@ -20,11 +20,11 @@ repositories:
     update: true
 
 tasks:
+  # the git-spice install may be installed not on system go. need to figure out 
+  # to deal with that here. 
   - name: install git-spice
     command: /usr/local/bin/go install go.abhg.dev/gs@latest
     when: "on-create,on-restart"
-    args:
-        chdir: /home/user
   - name: update bean zshrc
     command: cp /home/user/bean-worksetup/devpod/home/zshrc /home/user/.zshrc
     when: "on-create,on-restart"
