@@ -5,6 +5,7 @@ region: oregon
 shell: zsh
 packages:
   - unp # install unzip/untar/unarchive wrapper
+  - lcov
   - autojump
   - uber-ubuild-cli
   - uber-aifx
