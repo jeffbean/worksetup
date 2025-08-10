@@ -7,6 +7,7 @@ packages:
   - unp # install unzip/untar/unarchive wrapper
   - autojump
   - uber-ubuild-cli
+  - uber-aifx
   - uber-hostcollector
   - kubectl
   - google-cloud-cli-gke-gcloud-auth-plugin
