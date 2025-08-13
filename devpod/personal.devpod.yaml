@@ -22,6 +22,18 @@ repositories:
     update: true
 
 tasks:
+  - name: install aifx things
+    command: aifx agent install claude
+    when: "on-create,on-restart"
+  - name: install mcp things phab
+    command: aifx mcp install phab
+    when: "on-create,on-restart"
+  - name: install mcp things t3
+    command: aifx mcp install t3
+    when: "on-create,on-restart"
+  - name: install mcp things code-reviewer
+    command: aifx mcp install code-reviewer
+    when: "on-create,on-restart"
   # the git-spice install may be installed not on system go. need to figure out 
   # to deal with that here. 
   - name: install git-spice
