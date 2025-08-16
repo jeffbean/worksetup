@@ -41,14 +41,19 @@ histo() {
 }
 ###################################################
 
-# Claude Code installation/update function
-claude-setup() {
-    /home/user/bean-worksetup/devpod/flavors/claude/install-claude-code.sh
-}
 
 crun() {
-  local dir="$1"
-  aifx agent run claude -c --add-dir="$dir"
+  local more_dirs="$@"
+  local add_dir_flags=""
+  
+  for dir in $more_dirs; do
+    add_dir_flags+=" --add-dir=$dir"
+  done
+
+  if ! aifx agent run claude -c $add_dir_flags; then
+    # Retry without -c (continue) flag for fresh session.
+    aifx agent run claude $add_dir_flags
+  fi
 }
 
 gsnb() {
@@ -85,6 +90,34 @@ gsnb() {
 
   echo "✅ \033[32mCreated branch '$branch_name' (title: \"$title\")\033[0m"
   echo "🔗 \033[36mLocal upstream set to '$current_branch'\033[0m"
+}
+
+arc-setup() {
+  local arcrc="$HOME/.arcrc"
+    
+  # Check if .arcrc exists and has a token
+  if [[ -f "$arcrc" ]]; then
+    if jq -e '.hosts | to_entries[] | select(.value.token != null and .value.token != "")' "$arcrc" >/dev/null 2>&1; then
+      echo "✅ Arc certificate already installed"
+      return 0
+    fi
+  fi
+
+  echo "🔑 Arc certificate not found or invalid. Installing..."
+  if arc install-certificate; then
+    echo "✅ Arc certificate installed successfully"
+  else
+    echo "❌ Failed to install arc certificate"
+    return 1
+  fi
+}
+
+devsetup() {
+    #  run arc to get cert. (its used by phab mcp)
+    arc-setup
+
+    # first install things.
+    /home/user/bean-worksetup/devpod/flavors/claude/install-claude-code.sh
 }
 
 # installed with apt

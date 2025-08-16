@@ -9,7 +9,7 @@
     "shell": "/bin/zsh"
   },
   "statusLine": {
-    "type": "script",
-    "script": "/home/user/.claude/statusline-devpod.sh"
+    "type": "command",
+    "command": "/home/user/.claude/statusline-devpod.sh"
   }
 }
