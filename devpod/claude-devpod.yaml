@@ -14,6 +14,9 @@ packages:
   - google-cloud-cli-gke-gcloud-auth-plugin
   - atop
   - jq # for Claude statusline JSON parsing
+  - curl # for Claude Code installation
+  - nodejs # for MCP agents
+  - npm # for MCP agent dependencies
 
 repositories:
   - dest: /home/user/.oh-my-zsh
