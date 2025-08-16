@@ -1,36 +1,35 @@
-export ZSH=${HOME}/.oh-my-zsh                                                       
-                                                                                    
-ZSH_THEME="devpod"        
-export POWERLINE_NO_SHELL_PROMPT=1                                                  
-                                                                                    
-# Uncomment the following line if you want to change the command execution time                                                                                         
-# stamp shown in the history command output.                            
+export ZSH=${HOME}/.oh-my-zsh
+
+ZSH_THEME="devpod"
+export POWERLINE_NO_SHELL_PROMPT=1
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-HIST_STAMPS="yyyy-mm-dd"                                                            
+HIST_STAMPS="yyyy-mm-dd"
 
-source $ZSH/oh-my-zsh.sh                  
+source $ZSH/oh-my-zsh.sh
 
-export EDITOR=vim                                                                   
-export UBER_OWNER="bean@uber.com"                                                   
-export UBER_LDAP_UID="bean"     
+export EDITOR=vim
+export UBER_OWNER="bean@uber.com"
+export UBER_LDAP_UID="bean"
 export KUBECONFIG="$HOME/.kube/uconfig"
 
-######## Alias Section ############################            
+######## Alias Section ############################
 
-alias af='arc flow' 
+alias af='arc flow'
 
 alias bhd="bazel run //src/code.uber.internal/infra/bhd/cmd/cli --"
 alias massrem="bazel run //src/code.uber.internal/infra/hostissues/cmd/massremediation --"
 # Bazel
 alias bshow="bazel query 'kind(rule, ...)' --output label_kind"
 alias mtest='gazelle && bazel test //src/code.uber.internal/infra/metal/...'
-alias ms='gazelle && bazel test //src/code.uber.internal/infra/metal/... && bazel build --nobuild //src/code.uber.internal/infra/metal/... && bazel test //src/code.uber.internal/infra/collettore/...'
 alias sgg='~/go-code/config/infra/starlark/scripts/stargen.sh'
 alias bpit='bazel build --platforms //:linux_amd64 //src/code.uber.internal/infra/metal/pitstop/cmd:pitstop'
 
 
 fr() {
-    rg -l "$1" | xargs perl -p -i -e "s#$1#$2#g"   
+    rg -l "$1" | xargs perl -p -i -e "s#$1#$2#g"
 }
 
 histo() {

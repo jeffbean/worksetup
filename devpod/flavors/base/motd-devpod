@@ -1,0 +1,122 @@
+#!/bin/bash
+
+# Colors
+cyan="\e[1;36m"
+blue="\e[1;34m"
+green="\e[1;32m"
+red="\e[1;31m"
+yellow="\e[1;33m"
+grey="\e[90m"
+reset="\e[0m"
+
+parse_devpod_log() {
+    local log_file="/home/user/.devpod/logs/devpod.yaml.log"
+
+    if [[ ! -f "$log_file" ]]; then
+        echo "no_log"
+        return
+    fi
+
+    # Get the latest execution block
+    local latest_execution=$(tac "$log_file" | awk '/Devpod.yaml execution completed/{exit} {print}' | tac)
+
+    # Parse PLAY RECAP from the latest execution
+    local recap_line=$(echo "$latest_execution" | grep "PLAY RECAP" -A 1 | tail -1)
+
+    if [[ -z "$recap_line" ]]; then
+        echo "no_recap"
+        return
+    fi
+
+    # Extract stats from recap line
+    local ok=$(echo "$recap_line" | grep -o 'ok=[0-9]*' | cut -d= -f2)
+    local changed=$(echo "$recap_line" | grep -o 'changed=[0-9]*' | cut -d= -f2)
+    local unreachable=$(echo "$recap_line" | grep -o 'unreachable=[0-9]*' | cut -d= -f2)
+    local failed=$(echo "$recap_line" | grep -o 'failed=[0-9]*' | cut -d= -f2)
+    local skipped=$(echo "$recap_line" | grep -o 'skipped=[0-9]*' | cut -d= -f2)
+
+    # Get execution timestamp
+    local timestamp_line=$(echo "$latest_execution" | head -1)
+    local timestamp=$(echo "$timestamp_line" | grep -o '"ts":"[^"]*"' | cut -d'"' -f4)
+
+    echo "$ok|$changed|$unreachable|$failed|$skipped|$timestamp"
+}
+
+get_failed_tasks() {
+    local log_file="/home/user/.devpod/logs/devpod.yaml.log"
+
+    if [[ ! -f "$log_file" ]]; then
+        return
+    fi
+
+    # Get the latest execution block and find failed tasks
+    local latest_execution=$(tac "$log_file" | awk '/Devpod.yaml execution completed/{exit} {print}' | tac)
+
+    # Look for failed task indicators
+    echo "$latest_execution" | grep -E "FAILED|UNREACHABLE|fatal:" | head -3
+}
+
+format_time_ago() {
+    local timestamp="$1"
+
+    if [[ -z "$timestamp" ]]; then
+        echo "unknown"
+        return
+    fi
+
+    # Convert ISO timestamp to epoch
+    local then=$(date -d "$timestamp" +%s 2>/dev/null || echo "0")
+    local now=$(date +%s)
+    local diff=$((now - then))
+
+    if [[ $diff -lt 60 ]]; then
+        echo "${diff}s ago"
+    elif [[ $diff -lt 3600 ]]; then
+        echo "$((diff / 60))m ago"
+    elif [[ $diff -lt 86400 ]]; then
+        echo "$((diff / 3600))h ago"
+    else
+        echo "$((diff / 86400))d ago"
+    fi
+}
+
+devpod_ansible_status() {
+    local stats=$(parse_devpod_log)
+
+    echo ""
+    echo -e "⚙️ ${cyan}Ansible Status$reset"
+
+    if [[ "$stats" == "no_log" ]]; then
+        echo -e "   ${grey}No log found$reset"
+        return
+    elif [[ "$stats" == "no_recap" ]]; then
+        echo -e "   ${yellow}⚠️ No summary found$reset"
+        return
+    fi
+
+    IFS='|' read -r ok changed unreachable failed skipped timestamp <<< "$stats"
+    local time_ago=$(format_time_ago "$timestamp")
+
+    if [[ "$failed" -gt 0 || "$unreachable" -gt 0 ]]; then
+        echo -e "   ${red}❌ FAILED$reset ${grey}($time_ago)$reset"
+        [[ "$failed" -gt 0 ]] && echo -e "   ${red}Failed: $failed$reset"
+    else
+        echo -e "   ${green}✅ SUCCESS$reset ${grey}($time_ago)$reset"
+    fi
+}
+
+get_devpod_flavor() {
+    local flavor="${BEAN_DEVPOD_FLAVOR:-unknown}"
+    echo "$flavor"
+}
+
+flavor_info() {
+    local flavor=$(get_devpod_flavor)
+    echo -e "🤖 ${cyan}DevPod:$reset $flavor"
+}
+
+# Always show Ansible status
+devpod_ansible_status
+
+# Show flavor information
+flavor_info

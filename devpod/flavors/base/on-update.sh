@@ -8,6 +8,16 @@ copy_base_configs() {
     [ -f "$base_dir/devpod.zsh-theme" ] && cp "$base_dir/devpod.zsh-theme" /home/user/.oh-my-zsh/themes/
     [ -f "$base_dir/dot.gitconfig" ] && cp "$base_dir/dot.gitconfig" /home/user/.gitconfig
     [ -f "$base_dir/dot.gitignore" ] && cp "$base_dir/dot.gitignore" /home/user/.gitignore
+    
+    # Update custom MOTD script
+    if [ -f "/home/user/bean-worksetup/devpod/flavors/base/motd-devpod" ]; then
+        sudo cp "/home/user/bean-worksetup/devpod/flavors/base/motd-devpod" /etc/update-motd.d/50-bean-devpod
+        sudo chmod +x /etc/update-motd.d/50-bean-devpod
+    fi
+    
+    # Set flavor environment variable
+    echo 'export BEAN_DEVPOD_FLAVOR="base"' | sudo tee /etc/profile.d/50-bean.sh
+    sudo chmod +x /etc/profile.d/50-bean.sh
 }
 
 echo "🔄 DevPod: Running base update..."

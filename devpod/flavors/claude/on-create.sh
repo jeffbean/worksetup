@@ -8,6 +8,10 @@ setup_claude_configs() {
     cp "$claude_dir/settings.json" /home/user/.claude/
     cp "$claude_dir/statusline-devpod.sh" /home/user/.claude/
     chmod +x /home/user/.claude/statusline-devpod.sh
+    
+    # Override flavor environment variable to claude
+    echo 'export BEAN_DEVPOD_FLAVOR="claude"' | sudo tee /etc/profile.d/50-bean.sh
+    sudo chmod +x /etc/profile.d/50-bean.sh
 }
 
 echo "🤖 Claude DevPod: Starting setup..."
