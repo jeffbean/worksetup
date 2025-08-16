@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "script",
+    "script": "/home/user/.claude/statusline-devpod.sh"
+  }
+}

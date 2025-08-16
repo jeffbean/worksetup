@@ -13,7 +13,8 @@ packages:
   - kubectl
   - google-cloud-cli-gke-gcloud-auth-plugin
   - atop
- 
+  - jq # for Claude statusline JSON parsing
+
 repositories:
   - dest: /home/user/.oh-my-zsh
     repo: https://github.com/ohmyzsh/ohmyzsh.git
@@ -22,12 +23,12 @@ repositories:
     update: true
 
 tasks:
-  # Run base devpod setup
-  - name: devpod initial setup
-    command: /home/user/bean-worksetup/devpod/flavors/base/on-create.sh
+  # Run initial Claude setup
+  - name: claude initial setup
+    command: /home/user/bean-worksetup/devpod/flavors/claude/on-create.sh
     when: "on-create"
   
-  # Run devpod updates
-  - name: devpod update setup  
-    command: /home/user/bean-worksetup/devpod/flavors/base/on-update.sh
+  # Run Claude updates
+  - name: claude update setup  
+    command: /home/user/bean-worksetup/devpod/flavors/claude/on-update.sh
     when: "on-restart"
