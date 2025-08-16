@@ -17,16 +17,11 @@ fi
 
 mkdir -p ~/.claude
 echo "📦 Installing MCP agents..."
-if ! aifx mcp install phab; then
-    echo "⚠️ MCP phab installation may require authentication"
-fi
 
-if ! aifx mcp install t3; then
-    echo "⚠️ MCP t3 installation may require authentication"
-fi
-
-if ! aifx mcp install code-reviewer; then
-    echo "⚠️ MCP code-reviewer installation may require authentication"
-fi
+# install the mcp for claude. 
+for agent in t3 phab code-reviewer; do
+    aifx mcp install "$agent"
+    aifx agent run claude mcp add "$agent" aifx mcp run "$agent"
+done
 
 echo "✅ Setup complete! (Some installations may need manual authentication)"

@@ -46,6 +46,11 @@ claude-setup() {
     /home/user/bean-worksetup/devpod/flavors/claude/install-claude-code.sh
 }
 
+crun() {
+  local dir="$1"
+  aifx agent run claude -c --add-dir="$dir"
+}
+
 gsnb() {
   if [ $# -eq 0 ]; then
     display_error "Usage: gspnew <branch title sentence>"

@@ -11,37 +11,5 @@
   "statusLine": {
     "type": "script",
     "script": "/home/user/.claude/statusline-devpod.sh"
-  },
-  "mcpServers": {
-    "phab": {
-      "type": "stdio",
-      "command": "aifx",
-      "args": [
-        "mcp",
-        "run",
-        "phab"
-      ],
-      "env": {}
-    },
-    "t3": {
-      "type": "stdio",
-      "command": "aifx",
-      "args": [
-        "mcp",
-        "run",
-        "t3"
-      ],
-      "env": {}
-    },
-    "code-reviewer": {
-      "type": "stdio",
-      "command": "aifx",
-      "args": [
-        "mcp",
-        "run",
-        "code-reviewer"
-      ],
-      "env": {}
-    }
   }
 }

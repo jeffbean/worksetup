@@ -22,7 +22,4 @@ echo "📦 Running base devpod setup..."
 echo "📁 Setting up Claude configuration..."
 setup_claude_configs
 
-echo "📦 Installing Claude Code..."
-/home/user/bean-worksetup/devpod/flavors/claude/install-claude-code.sh
-
 echo "✅ Claude DevPod setup complete!"
