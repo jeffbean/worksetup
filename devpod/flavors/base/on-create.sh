@@ -15,7 +15,7 @@ copy_base_configs() {
 
     # Set flavor environment variable
     echo 'export BEAN_DEVPOD_FLAVOR="base"' | sudo tee /etc/profile.d/50-bean.sh
-    sudo chmod +x /etc/profile.d/50-bean.sh
+    sudo chmod 644 /etc/profile.d/50-bean.sh
 }
 
 echo "📦 DevPod: Starting base setup..."

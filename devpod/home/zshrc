@@ -27,6 +27,10 @@ alias mtest='gazelle && bazel test //src/code.uber.internal/infra/metal/...'
 alias sgg='~/go-code/config/infra/starlark/scripts/stargen.sh'
 alias bpit='bazel build --platforms //:linux_amd64 //src/code.uber.internal/infra/metal/pitstop/cmd:pitstop'
 
+display_error() {
+    echo "❌ \033[31mERROR:\033[0m $1" >&2
+    return 1
+}
 
 fr() {
     rg -l "$1" | xargs perl -p -i -e "s#$1#$2#g"
@@ -37,9 +41,9 @@ histo() {
 }
 ###################################################
 
-display_error() {
-    echo "❌ \033[31mERROR:\033[0m $1" >&2
-    return 1
+# Claude Code installation/update function
+claude-setup() {
+    /home/user/bean-worksetup/devpod/flavors/claude/install-claude-code.sh
 }
 
 gsnb() {

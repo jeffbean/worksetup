@@ -1,15 +1,32 @@
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
 
-echo "🤖 Installing Claude Code and MCP agents..."
+echo "🤖 Setting up Claude Code and MCP agents..."
+
+echo "📦 Updating system packages..."
+sudo apt-get update
+
+echo "📦 Updating uber-aifx package..."
+sudo apt-get install --only-upgrade uber-aifx -y
 
 echo "📦 Installing Claude Code CLI via aifx..."
-aifx agent install claude
+if ! aifx agent install claude; then
+    echo "⚠️ Claude Code installation requires interactive authentication"
+    echo "   Run 'aifx agent install claude' manually after devpod setup"
+fi
 
 mkdir -p ~/.claude
 echo "📦 Installing MCP agents..."
-aifx mcp install phab
-aifx mcp install t3
-aifx mcp install code-reviewer
+if ! aifx mcp install phab; then
+    echo "⚠️ MCP phab installation may require authentication"
+fi
 
-echo "✅ Setup complete!"
+if ! aifx mcp install t3; then
+    echo "⚠️ MCP t3 installation may require authentication"
+fi
+
+if ! aifx mcp install code-reviewer; then
+    echo "⚠️ MCP code-reviewer installation may require authentication"
+fi
+
+echo "✅ Setup complete! (Some installations may need manual authentication)"

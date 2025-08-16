@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Source our environment
+source /etc/profile.d/50-bean.sh 2>/dev/null || true
+
 # Colors
 cyan="\e[1;36m"
 blue="\e[1;34m"
@@ -17,27 +20,65 @@ parse_devpod_log() {
         return
     fi
 
-    # Get the latest execution block
-    local latest_execution=$(tac "$log_file" | awk '/Devpod.yaml execution completed/{exit} {print}' | tac)
+    # Find the most recent execution start
+    local latest_start=$(tac "$log_file" | while read -r line; do
+        if echo "$line" | jq -e '.msg | test("Devpod-yaml executor is launching")' >/dev/null 2>&1; then
+            echo "$line" | jq -r '.ts'
+            break
+        fi
+    done)
 
-    # Parse PLAY RECAP from the latest execution
-    local recap_line=$(echo "$latest_execution" | grep "PLAY RECAP" -A 1 | tail -1)
+    if [[ -z "$latest_start" ]]; then
+        echo "no_execution"
+        return
+    fi
+
+    # Get all lines from the latest execution
+    local latest_lines=$(awk -v start="$latest_start" '
+        {
+            if (match($0, /"ts":"([^"]*)"/, ts_match)) {
+                if (ts_match[1] >= start) {
+                    print $0
+                }
+            }
+        }
+    ' "$log_file")
+
+    # Check for fatal failures
+    local failed_line=$(echo "$latest_lines" | while read -r line; do
+        if echo "$line" | jq -e '.msg | test("fatal: \\[localhost\\]: FAILED")' >/dev/null 2>&1; then
+            echo "$line"
+            break
+        fi
+    done)
+
+    if [[ -n "$failed_line" ]]; then
+        local timestamp=$(echo "$failed_line" | jq -r '.ts')
+        echo "0|0|0|1|0|$timestamp"
+        return
+    fi
+
+    # Look for PLAY RECAP
+    local recap_line=$(echo "$latest_lines" | while read -r line; do
+        if echo "$line" | jq -e '.msg | test("localhost.*: ok=")' >/dev/null 2>&1; then
+            echo "$line"
+            break
+        fi
+    done)
 
     if [[ -z "$recap_line" ]]; then
         echo "no_recap"
         return
     fi
 
-    # Extract stats from recap line
-    local ok=$(echo "$recap_line" | grep -o 'ok=[0-9]*' | cut -d= -f2)
-    local changed=$(echo "$recap_line" | grep -o 'changed=[0-9]*' | cut -d= -f2)
-    local unreachable=$(echo "$recap_line" | grep -o 'unreachable=[0-9]*' | cut -d= -f2)
-    local failed=$(echo "$recap_line" | grep -o 'failed=[0-9]*' | cut -d= -f2)
-    local skipped=$(echo "$recap_line" | grep -o 'skipped=[0-9]*' | cut -d= -f2)
-
-    # Get execution timestamp
-    local timestamp_line=$(echo "$latest_execution" | head -1)
-    local timestamp=$(echo "$timestamp_line" | grep -o '"ts":"[^"]*"' | cut -d'"' -f4)
+    # Extract stats using jq and regex
+    local msg=$(echo "$recap_line" | jq -r '.msg')
+    local ok=$(echo "$msg" | grep -o 'ok=[0-9]*' | cut -d= -f2)
+    local changed=$(echo "$msg" | grep -o 'changed=[0-9]*' | cut -d= -f2)
+    local unreachable=$(echo "$msg" | grep -o 'unreachable=[0-9]*' | cut -d= -f2)
+    local failed=$(echo "$msg" | grep -o 'failed=[0-9]*' | cut -d= -f2)
+    local skipped=$(echo "$msg" | grep -o 'skipped=[0-9]*' | cut -d= -f2)
+    local timestamp=$(echo "$recap_line" | jq -r '.ts')
 
     echo "$ok|$changed|$unreachable|$failed|$skipped|$timestamp"
 }
@@ -49,11 +90,33 @@ get_failed_tasks() {
         return
     fi
 
-    # Get the latest execution block and find failed tasks
-    local latest_execution=$(tac "$log_file" | awk '/Devpod.yaml execution completed/{exit} {print}' | tac)
+    # Find the most recent execution start
+    local latest_start=$(tac "$log_file" | while read -r line; do
+        if echo "$line" | jq -e '.msg | test("Devpod-yaml executor is launching")' >/dev/null 2>&1; then
+            echo "$line" | jq -r '.ts'
+            break
+        fi
+    done)
 
-    # Look for failed task indicators
-    echo "$latest_execution" | grep -E "FAILED|UNREACHABLE|fatal:" | head -3
+    if [[ -z "$latest_start" ]]; then
+        return
+    fi
+
+    # Get failed task messages from the latest execution
+    awk -v start="$latest_start" '
+        {
+            if (match($0, /"ts":"([^"]*)"/, ts_match)) {
+                if (ts_match[1] >= start) {
+                    print $0
+                }
+            }
+        }
+    ' "$log_file" | while read -r line; do
+        if echo "$line" | jq -e '.msg | test("FAILED|UNREACHABLE|fatal:")' >/dev/null 2>&1; then
+            echo "$line" | jq -r '.msg' | head -c 60
+            echo
+        fi
+    done | head -3
 }
 
 format_time_ago() {
@@ -106,8 +169,7 @@ devpod_ansible_status() {
 }
 
 get_devpod_flavor() {
-    local flavor="${BEAN_DEVPOD_FLAVOR:-unknown}"
-    echo "$flavor"
+    echo "${BEAN_DEVPOD_FLAVOR:-unknown}"
 }
 
 flavor_info() {

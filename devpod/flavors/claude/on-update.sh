@@ -12,7 +12,7 @@ refresh_claude_configs() {
     
     # Override flavor environment variable to claude
     echo 'export BEAN_DEVPOD_FLAVOR="claude"' | sudo tee /etc/profile.d/50-bean.sh
-    sudo chmod +x /etc/profile.d/50-bean.sh
+    sudo chmod 644 /etc/profile.d/50-bean.sh
 }
 
 echo "🔄 Claude DevPod: Running update..."
