@@ -1,6 +1,6 @@
 [user]
     email = bean@uber.com
-    name = Jeff Bean 
+    name = Jeff Bean
 
 [alias]
     st = status
@@ -20,6 +20,5 @@
 [core]
     excludesfile = /home/user/.gitignore
 
-# [spice]
-#   submit.publish = false
-#   branchCreate.prefix = "bean/"
+[commit]
+        gpgsign = false
