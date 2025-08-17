@@ -35,82 +35,91 @@ fi
 # System Prerequisites
 # ============================================================================
 
-       setup_permissions() {
-           display_info "Setting up system permissions..."
-           
-           # SSH directory
-           if [ -d "$HOME/.ssh" ]; then
-               if [ ! -w "$HOME/.ssh" ]; then
-                   display_info "Fixing SSH directory permissions..."
-                   sudo chown -R $(whoami) "$HOME/.ssh"
-               fi
-           else
-               mkdir -p "$HOME/.ssh"
-           fi
-           
-           # Homebrew directories - only fix if we can't write to them
-           for dir in "$HOME/Library/Caches/Homebrew/" "$HOME/.cache" /usr/local/Caskroom /usr/local/sbin /usr/local/lib /usr/local/share; do
-               if [ -d "$dir" ] && [ ! -w "$dir" ]; then
-                   display_info "Fixing permissions for $dir..."
-                   sudo chown -R $(whoami) "$dir"
-               fi
-           done
-           
-           # Special case for dnscrypt-proxy
-           if [ -d /usr/local/lib/dnscrypt-proxy ] && [ ! -w /usr/local/lib/dnscrypt-proxy ]; then
-               display_info "Setting dnscrypt-proxy permissions..."
-               sudo chown -R root:wheel /usr/local/lib/dnscrypt-proxy
-           fi
-           
-           # Clean up old uber tap if it exists
-           if [ -d /usr/local/Homebrew/Library/Taps/uber/homebrew-alt ]; then
-               display_info "Cleaning up old Uber Homebrew tap..."
-               rm -rf /usr/local/Homebrew/Library/Taps/uber/homebrew-alt
-           fi
-           
-           display_success "System permissions configured"
-       }
+setup_permissions() {
+    display_info "Setting up system permissions..."
+    
+    # SSH directory
+    if [ -d "$HOME/.ssh" ]; then
+        if [ ! -w "$HOME/.ssh" ]; then
+            display_info "Fixing SSH directory permissions..."
+            sudo chown -R $(whoami) "$HOME/.ssh"
+        fi
+    else
+        mkdir -p "$HOME/.ssh"
+    fi
+    
+    # Homebrew directories - only fix if we can't write to them
+    for dir in "$HOME/Library/Caches/Homebrew/" "$HOME/.cache" /usr/local/Caskroom /usr/local/sbin /usr/local/lib /usr/local/share; do
+        if [ -d "$dir" ] && [ ! -w "$dir" ]; then
+            display_info "Fixing permissions for $dir..."
+            sudo chown -R $(whoami) "$dir"
+        fi
+    done
+    
+    # Special case for dnscrypt-proxy
+    if [ -d /usr/local/lib/dnscrypt-proxy ] && [ ! -w /usr/local/lib/dnscrypt-proxy ]; then
+        display_info "Setting dnscrypt-proxy permissions..."
+        sudo chown -R root:wheel /usr/local/lib/dnscrypt-proxy
+    fi
+    
+    # Clean up old uber tap if it exists
+    if [ -d /usr/local/Homebrew/Library/Taps/uber/homebrew-alt ]; then
+        display_info "Cleaning up old Uber Homebrew tap..."
+        rm -rf /usr/local/Homebrew/Library/Taps/uber/homebrew-alt
+    fi
+    
+    display_success "System permissions configured"
+}
 
-       setup_xcode() {
-           display_info "Setting up Xcode tools..."
-           
-           if [ -e "/Applications/Xcode.app" ]; then
-               xcode-select --install 2>/dev/null || display_info "Xcode command line tools already installed"
-               
-               # Only try to accept license if we haven't already
-               if ! xcodebuild -license check 2>/dev/null; then
-                   display_info "Accepting Xcode license..."
-                   sudo xcodebuild -license accept
-               else
-                   display_info "Xcode license already accepted"
-               fi
-               
-               display_success "Xcode tools configured"
-           else
-               display_info "Xcode not found, skipping Xcode setup"
-           fi
-       }
+setup_xcode() {
+    display_info "Setting up Xcode tools..."
+    
+    if [ -e "/Applications/Xcode.app" ]; then
+        xcode-select --install 2>/dev/null || display_info "Xcode command line tools already installed"
+        
+        # Only try to accept license if we haven't already
+        if ! xcodebuild -license check 2>/dev/null; then
+            display_info "Accepting Xcode license..."
+            sudo xcodebuild -license accept
+        else
+            display_info "Xcode license already accepted"
+        fi
+        
+        display_success "Xcode tools configured"
+    else
+        display_info "Xcode not found, skipping Xcode setup"
+    fi
+}
 
-       install_homebrew_packages() {
-           display_info "Installing Homebrew packages..."
-           
-           export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-           brew analytics off 2>&1 >/dev/null || true
-           
-           # Run brew bundle and capture output
-           if brew bundle --file="$REPO_ROOT/osx/Brewfile" 2>&1 | tee /tmp/brew-bundle.log; then
-               display_success "Homebrew packages installed"
-           else
-               # Check if the error is just the adoptopenjdk8 issue
-               if grep -q "adoptopenjdk8" /tmp/brew-bundle.log && grep -q "brew bundle.*complete" /tmp/brew-bundle.log; then
-                   display_info "Homebrew packages installed (ignoring adoptopenjdk8 error)"
-                   display_success "Homebrew packages installed"
-               else
-                   display_error "Failed to install Homebrew packages"
-                   exit 1
-               fi
-           fi
-       }
+install_homebrew_packages() {
+    display_info "Installing Homebrew packages..."
+    
+    export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+    brew analytics off 2>&1 >/dev/null || true
+    
+    # Run brew bundle and capture output
+    if brew bundle --file="$REPO_ROOT/osx/Brewfile" 2>&1 | tee /tmp/brew-bundle.log; then
+        display_success "Homebrew packages installed"
+    else
+        # Check if the error is just the adoptopenjdk8 issue
+        if grep -q "adoptopenjdk8" /tmp/brew-bundle.log && grep -q "brew bundle.*complete" /tmp/brew-bundle.log; then
+            display_info "Homebrew packages installed (ignoring adoptopenjdk8 error)"
+            display_success "Homebrew packages installed"
+        else
+            display_error "Failed to install Homebrew packages"
+            exit 1
+        fi
+    fi
+}
+
+setup_git() {
+    display_info "Setting up git..."
+    cp --backup=numbered "$REPO_ROOT/osx/home/gitconfig" "$HOME/.bean_gitconfig"
+
+    # sed in the base ~/.gitconfig the ~/.bean_gitconfig as a conditional config. 
+    
+    display_success "Git configuration installed"
+}
 
 setup_tmux() {
     display_info "Setting up tmux..."
@@ -127,7 +136,7 @@ setup_tmux() {
            if [ -f "$HOME/.tmux.conf" ]; then
                cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$(date +%s)"
            fi
-           cp "$REPO_ROOT/templates/dot_tmux.conf" "$HOME/.tmux.conf"
+           cp "$REPO_ROOT/osx/home/dot_tmux.conf" "$HOME/.tmux.conf"
     display_success "Tmux configuration installed"
 }
 
@@ -158,22 +167,22 @@ setup_zsh() {
         display_info "Oh-my-zsh already installed"
     fi
     
-               # Copy configurations
-           if [ -f "$HOME/.vimrc" ]; then
-               cp "$HOME/.vimrc" "$HOME/.vimrc.backup.$(date +%s)"
-           fi
-           cp "$REPO_ROOT/templates/dot_vimrc" "$HOME/.vimrc"
-    
+    # Copy configurations
+    if [ -f "$HOME/.vimrc" ]; then
+        cp "$HOME/.vimrc" "$HOME/.vimrc.backup.$(date +%s)"
+    fi
+    cp "$REPO_ROOT/osx/home/dot_vimrc" "$HOME/.vimrc"
+
     # Setup zsh additional configurations
     mkdir -p "$HOME/.zsh/rc.d"
-    if [ -d "$REPO_ROOT/unfinished/zsh/rc.d" ]; then
-        rsync -a "$REPO_ROOT/unfinished/zsh/rc.d/" "$HOME/.zsh/rc.d/"
+    if [ -d "$REPO_ROOT/osx/home/zsh/rc.d" ]; then
+        rsync -a "$REPO_ROOT/osx/home/zsh/rc.d/" "$HOME/.zsh/rc.d/"
         display_success "Zsh additional configurations copied"
     fi
     
     # Copy custom theme
-    if [ -f "$REPO_ROOT/unfinished/bean.zsh-theme" ]; then
-        cp "$REPO_ROOT/unfinished/bean.zsh-theme" "$HOME/.oh-my-zsh/themes/"
+    if [ -f "$REPO_ROOT/common/bean.zsh-theme" ]; then
+        cp "$REPO_ROOT/common/bean.zsh-theme" "$HOME/.oh-my-zsh/themes/"
         display_success "Custom zsh theme installed"
     fi
 }
@@ -187,32 +196,10 @@ setup_devpod_automation() {
         return
     fi
     
-    # Create symlink to repo for consistent tmux path reference
-    if [ -L "$HOME/worksetup" ]; then
-        rm -f "$HOME/worksetup"
-    elif [ -d "$HOME/worksetup" ]; then
-        display_info "Moving existing ~/worksetup to ~/worksetup.backup"
-        mv "$HOME/worksetup" "$HOME/worksetup.backup"
-    fi
-    
-    ln -sf "$REPO_ROOT" "$HOME/worksetup"
-    display_success "Created symlink ~/worksetup → $REPO_ROOT"
-    
     # Make scripts executable in place
     chmod +x "$REPO_ROOT/osx/devpod"/*.sh 2>/dev/null || true
     display_success "DevPod scripts made executable"
-    
-    # Add aliases to zshrc
-    if [ -f "$HOME/.zshrc" ] && ! grep -q "alias devpod_debug" "$HOME/.zshrc" 2>/dev/null; then
-        cat >> "$HOME/.zshrc" << 'EOF'
-
-# DevPod automation aliases
-alias devpod_debug='~/worksetup/osx/devpod/debug-devpod.sh'
-alias dpsplit='~/worksetup/osx/devpod/devpod-split.sh'
-EOF
-        display_success "Added DevPod aliases"
-    fi
-    
+        
     display_info ""
     display_info "📋 DevPod Tmux Key Bindings (after tmux restart):"
     display_info "   Ctrl+a d      - Interactive devpod popup selector"
@@ -232,6 +219,7 @@ main() {
     setup_permissions
     setup_xcode
     install_homebrew_packages
+    setup_git
     setup_tmux
     setup_powerline
     setup_zsh
