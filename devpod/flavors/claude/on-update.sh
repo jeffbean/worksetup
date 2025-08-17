@@ -10,15 +10,26 @@ refresh_claude_configs() {
         chmod +x /home/user/.claude/statusline-devpod.sh
     }
     
-    # Override flavor environment variable to claude
-    echo 'export BEAN_DEVPOD_FLAVOR="claude"' | sudo tee /etc/profile.d/50-bean.sh
-    sudo chmod 644 /etc/profile.d/50-bean.sh
+    # Write configuration with claude flavor
+    write_profile_config "claude"
 }
 
 echo "🔄 Claude DevPod: Running update..."
 
 echo "📦 Running base devpod update..."
-/home/user/bean-worksetup/devpod/flavors/base/on-update.sh
+# Source shared functions and load config
+source "/home/user/bean-worksetup/devpod/flavors/base/shared-functions.sh"
+load_config
+
+# Run base update components but skip config loading since we already did it
+echo "🔧 Refreshing configurations..."
+update_base_configs
+
+echo "📦 Updating system packages..."
+sudo apt-get update && sudo apt-get upgrade -y
+
+echo "🌿 Updating git-spice..."
+/usr/local/bin/go install go.abhg.dev/gs@latest
 
 echo "⚙️ Refreshing Claude configurations..."
 refresh_claude_configs

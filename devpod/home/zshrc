@@ -120,6 +120,20 @@ devsetup() {
     /home/user/bean-worksetup/devpod/flavors/claude/install-claude-code.sh
 }
 
+# Refresh autojump database and configuration
+refresh_autojump() {
+    source "/home/user/bean-worksetup/devpod/flavors/base/shared-functions.sh"
+    
+    # Get current flavor from environment
+    local current_flavor="${BEAN_DEVPOD_FLAVOR:-base}"
+    
+    # Refresh the profile configuration and autojump database
+    write_profile_config "$current_flavor"
+    setup_autojump_database
+    
+    echo "💫 Configuration refreshed! Source your shell or restart to see updates."
+}
+
 # installed with apt
 # auto-jump plugin - "j <dir>"
 [ -f /usr/share/autojump/autojump.sh ] && . /usr/share/autojump/autojump.sh

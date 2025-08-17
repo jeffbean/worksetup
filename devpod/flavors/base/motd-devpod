@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Source our environment
+# Source our environment - this contains all our configuration
 source /etc/profile.d/50-bean.sh 2>/dev/null || true
 
 # Colors
@@ -177,8 +177,30 @@ flavor_info() {
     echo -e "🤖 ${cyan}DevPod:$reset $flavor"
 }
 
+# Show devpod configuration
+show_devpod_config() {
+    echo ""
+    echo -e "🔧 ${cyan}DevPod Configuration$reset"
+    echo -e "   BEAN_INFRA_BASE_PATH=${BEAN_INFRA_BASE_PATH:-${yellow}<not set>$reset}"
+    echo -e "   BEAN_SEARCH_DEPTH=${BEAN_SEARCH_DEPTH:-${yellow}<not set>$reset}"
+    
+    # Show top autojump directories if available
+    if command -v autojump >/dev/null 2>&1; then
+        echo ""
+        echo -e "📊 ${cyan}Top Autojump Directories$reset"
+        autojump -s | tail -7 2>/dev/null | while read -r line; do
+            if [[ "$line" =~ ^[0-9]+\.[0-9]+: ]]; then
+                echo -e "   ${grey}$line$reset"
+            fi
+        done || echo -e "   ${grey}(no autojump data)$reset"
+    fi
+}
+
 # Always show Ansible status
 devpod_ansible_status
 
 # Show flavor information
 flavor_info
+
+# Show configuration
+show_devpod_config
