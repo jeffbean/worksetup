@@ -70,7 +70,7 @@ if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#dev
         echo "✅ Connecting to $selected/$project_name..."
         
         # Use tmux to run the devpod-split script
-        tmux run-shell "~/worksetup/devpod-split.sh '$selected' '$project_name'" &
+        tmux run-shell "~/worksetup/osx/devpod/devpod-split.sh '$selected' '$project_name'" &
         
         # Brief pause to show confirmation, then exit to close popup quickly
         sleep 0.2
