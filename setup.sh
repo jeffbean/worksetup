@@ -114,9 +114,20 @@ install_homebrew_packages() {
 
 setup_git() {
     display_info "Setting up git..."
-    cp --backup=numbered "$REPO_ROOT/osx/home/gitconfig" "$HOME/.bean_gitconfig"
+    # Backup existing config if it exists
+    if [ -f "$HOME/.bean_gitconfig" ]; then
+        cp "$HOME/.bean_gitconfig" "$HOME/.bean_gitconfig.backup.$(date +%s)"
+    fi
+    cp "$REPO_ROOT/osx/home/gitconfig" "$HOME/.bean_gitconfig"
 
-    # sed in the base ~/.gitconfig the ~/.bean_gitconfig as a conditional config. 
+    # Add conditional include to ~/.gitconfig if it doesn't exist
+    if [ ! -f "$HOME/.gitconfig" ]; then
+        echo "[includeIf \"gitdir:~/\"]\n    path = ~/.bean_gitconfig" > "$HOME/.gitconfig"
+    else
+        if ! grep -q "path = ~/.bean_gitconfig" "$HOME/.gitconfig"; then
+            echo -e "\n[includeIf \"gitdir:~/\"]\n    path = ~/.bean_gitconfig" >> "$HOME/.gitconfig"
+        fi
+    fi
     
     display_success "Git configuration installed"
 }
@@ -249,4 +260,3 @@ main() {
 
 # Run main setup
 main
-
