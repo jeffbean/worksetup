@@ -26,6 +26,7 @@ alias bshow="bazel query 'kind(rule, ...)' --output label_kind"
 alias mtest='gazelle && bazel test //src/code.uber.internal/infra/metal/...'
 alias sgg='~/go-code/config/infra/starlark/scripts/stargen.sh'
 alias bpit='bazel build --platforms //:linux_amd64 //src/code.uber.internal/infra/metal/pitstop/cmd:pitstop'
+alias taki='bazel run //src/code.uber.internal/infra/devtools/taki/cmd/taki:taki --'
 
 display_error() {
     echo "❌ \033[31mERROR:\033[0m $1" >&2
