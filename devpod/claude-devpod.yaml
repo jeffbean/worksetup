@@ -13,6 +13,7 @@ packages:
   - kubectl
   - google-cloud-cli-gke-gcloud-auth-plugin
   - atop
+  - sqlite3
   - jq # for Claude statusline JSON parsing
   - curl # for Claude Code installation
   - nodejs # for MCP agents
