@@ -19,7 +19,7 @@ mkdir -p ~/.claude
 echo "📦 Installing MCP agents..."
 
 # install the mcp for claude. 
-for agent in t3 phab code-reviewer buildkite engwiki; do
+for agent in t3 phab code-reviewer buildkite engwiki databook-mcp-server; do
     aifx mcp install "$agent"
     aifx agent run claude mcp add -s user "$agent" aifx mcp run "$agent"
 done
